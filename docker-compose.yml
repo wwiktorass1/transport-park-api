@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  database:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: transport_park
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Duslintuvas1
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - symfony
+
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    depends_on:
+      - database
+    volumes:
+      - ./migrations:/var/www/migrations
+      - .:/var/www
+    environment:
+      DATABASE_URL: "pgsql://postgres:Duslintuvas1@database:5432/transport_park"
+    networks:
+      - symfony
+
+volumes:
+  db_data:
+
+networks:
+  symfony:
